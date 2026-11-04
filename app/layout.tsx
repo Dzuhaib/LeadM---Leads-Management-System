@@ -14,9 +14,9 @@ export const metadata: Metadata = {
   description:
     "Team lead tracker for LinkedIn, WhatsApp and Facebook outreach at AIVized.",
   icons: {
-    icon: "/logo.png",
-    shortcut: "/logo.png",
-    apple: "/logo.png",
+    icon: "/icon.png",
+    shortcut: "/icon.png",
+    apple: "/apple-icon.png",
   },
 };
 

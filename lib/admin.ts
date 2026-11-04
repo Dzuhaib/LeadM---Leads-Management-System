@@ -181,6 +181,8 @@ export async function getAdminDashboard(input: {
     industryRows,
     serviceRows,
     funnelRows,
+    recentLeadRows,
+    recentMessageRows,
   ] = await Promise.all([
     db
       .select({
@@ -304,6 +306,46 @@ export async function getAdminDashboard(input: {
       .from(leads)
       .where(leadBaseWhere)
       .groupBy(leads.status),
+    db
+      .select({
+        id: leads.id,
+        businessName: leads.businessName,
+        serviceWanted: leads.serviceWanted,
+        channel: leads.channel,
+        status: leads.status,
+        createdAt: leads.createdAt,
+        ownerName: users.fullName,
+        ownerEmail: users.email,
+      })
+      .from(leads)
+      .innerJoin(users, eq(leads.ownerId, users.id))
+      .where(leadBaseWhere)
+      .orderBy(desc(leads.createdAt))
+      .limit(8),
+    db
+      .select({
+        id: activities.id,
+        leadId: leads.id,
+        businessName: leads.businessName,
+        serviceWanted: leads.serviceWanted,
+        type: activities.type,
+        channel: activities.channel,
+        occurredAt: activities.occurredAt,
+        ownerName: users.fullName,
+        ownerEmail: users.email,
+      })
+      .from(activities)
+      .innerJoin(leads, eq(activities.leadId, leads.id))
+      .innerJoin(users, eq(activities.userId, users.id))
+      .where(
+        and(
+          isNull(leads.deletedAt),
+          hasScope ? inArray(activities.userId, scopedIds) : sql`false`,
+          sql`${activities.type} in ${MESSAGE_TYPES_SQL}`,
+        ),
+      )
+      .orderBy(desc(activities.occurredAt))
+      .limit(8),
   ]);
 
   const newLeadsMap = new Map(
@@ -450,6 +492,8 @@ export async function getAdminDashboard(input: {
       name: row.key,
       replies: toNumber(row.replies),
     })),
+    recentLeads: recentLeadRows,
+    recentMessages: recentMessageRows,
     funnel: (
       [
         "new",

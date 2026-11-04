@@ -28,6 +28,7 @@ import { DateRangeFilter } from "@/components/dashboard/date-range-filter";
 import { FunnelChart } from "@/components/dashboard/charts";
 import { EmployeeFilter } from "@/components/admin/employee-filter";
 import { PerformanceTable } from "@/components/admin/performance-table";
+import { RecentActivityTabs } from "@/components/admin/recent-activity";
 import { TeamMessagesStackedChart } from "@/components/admin/team-charts";
 import { requireAdmin } from "@/lib/auth";
 import { getAdminDashboard } from "@/lib/admin";
@@ -168,6 +169,12 @@ export default async function AdminHomePage({
           tone="clay"
         />
       </div>
+
+      <RecentActivityTabs
+        newLeads={data.recentLeads}
+        messages={data.recentMessages}
+        timeZone={settingsRow.timezone}
+      />
 
       <Card>
         <CardHeader>
