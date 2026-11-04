@@ -4,21 +4,54 @@ A team lead tracker for LinkedIn, WhatsApp and Facebook outreach. Employees log
 first messages, day 3/7/14 follow-ups, replies and milestones. The follow-up
 engine and dashboards are driven by an activity ledger stored in PostgreSQL.
 
-This repository implements **Phases 0–12** of the build plan in `PHASES.md`:
+## Features & benefits
 
-- Phase 0 — Next.js + TypeScript + Tailwind/shadcn foundation
-- Phase 1 — Drizzle schema, migrations, seed, indexes
-- Phase 2 — Clerk authentication, roles, webhooks, approval gate
-- Phase 3 — AIVized brand, dark mode, app shell, UI primitives
-- Phase 4 — Lead CRUD, team-wide duplicate detection, soft delete, bulk status
-- Phase 5 — Activity logging, day 3/7/14 follow-up engine, no-reply detection
-- Phase 6 — Employee dashboard, charts, follow-ups due, message templates
-- Phase 7 — Admin team overview, replies/no-replies, employees, team-wide leads
-- Phase 8 — Settings, template editing, JSON workspace backup, audit log
-- Phase 9 — Styled Excel export, CSV/XLSX import with mapping and previews
-- Phase 10 — Security headers, secrets audit, webhook finalization, cron, privacy
-- Phase 11 — Unit + database-backed acceptance and security tests
-- Phase 12 — Final setup, deployment, and usage documentation
+- **Automatic day 3/7/14 follow-up engine** — log one message and the app
+  schedules every follow-up for you. Nothing slips through the cracks and no
+  one has to remember dates or use a spreadsheet.
+- **Follow-ups due on the dashboard** — today's and overdue follow-ups appear
+  with a one-click "Mark follow-up sent" button, so employees always know
+  exactly what to do next.
+- **Team-wide duplicate protection** — the same profile URL or business name is
+  blocked across the whole team, so two employees never contact the same client
+  twice. Admins can explicitly allow a duplicate when needed.
+- **Employee dashboard with charts** — messages per day, funnel and reply
+  breakdowns keep each person focused on their own pipeline.
+- **Admin team overview** — KPIs, messages-per-employee-per-day chart and
+  table, sortable performance table, leaderboard, funnel, channel results and
+  follow-up health, filterable by date range and employee.
+- **Reply tracking with tags** — logging a reply stops the sequence at once,
+  and the admin Replies view (plus a "No reply" tab) shows every conversation
+  with employee, channel, tag and date filters.
+- **Message templates** — copy-ready templates for every channel with
+  `[Name]` and `[Business]` auto-filled from the selected lead.
+- **Excel import with column mapping** — upload `.xlsx` or `.csv`, map the
+  columns, preview 20 rows, then import. Duplicates, validation errors and
+  skipped rows are reported and downloadable as CSV.
+- **Styled Excel export** — one-click exports of your leads and activities, or
+  selected rows only; admins get a team-wide workbook plus a full JSON backup
+  including users, templates, settings and audit history.
+- **Roles and approval gate** — the verified `ADMIN_EMAIL` becomes admin,
+  other sign-ups become employees, and an optional "Require admin approval"
+  setting holds new accounts as pending. Deactivated users lose access while
+  their data is retained.
+- **Lead reassignment and soft delete** — admins can reassign one or many
+  leads, soft delete, and view any employee's read-only dashboard, leads and
+  activity log.
+- **Configurable settings** — time zone, daily new-lead/message targets,
+  follow-up schedule, no-reply threshold, approval gate and all template copy
+  are controlled from the admin Settings page and apply immediately.
+- **Automatic no-reply detection** — leads that go silent past the configured
+  threshold are flagged on page load and by a `CRON_SECRET`-protected daily
+  cron, keeping the pipeline tidy without manual review.
+- **Complete audit log** — deletes, status changes, reassignments, settings and
+  template edits, imports and exports are all recorded in a paginated viewer.
+- **Privacy-first and secure by default** — signature-verified Clerk webhook,
+  security headers, rate-limited writes, escaped rendering, no personal data
+  in server logs, and all data stored in Postgres (never on disk). A privacy
+  and messaging-rules notice is built into the app.
+- **Light/dark mode with AIVized branding** — a responsive app shell with
+  collapsible sidebar, mobile drawer and a `prefers-color-scheme` fallback.
 
 ## Tech stack
 
@@ -297,59 +330,3 @@ lib/                Auth, follow-up engine, queries, validation, helpers
 scripts/            Local database + integration-test helpers
 tests/              Unit and database-backed acceptance tests
 ```
-
-## Validation status
-
-- `npm run typecheck` — passes.
-- `npm run lint` — passes.
-- `npm test` — unit suite passes (DB-backed tests skip unless configured).
-- `npm run test:integration` — 4 files / 25 tests pass against a throwaway
-  PostgreSQL 18 database.
-- `npm run build` — production build passes; `/privacy` and `/api/cron/daily`
-  are included in the route manifest.
-- Manual review — responsive sidebar/drawer breakpoints, light/dark tokens,
-  keyboard-focus styles, labelled inputs and dialogs, empty states and mobile
-  tables were checked in the shared shell and feature components.
-- Remaining external check — run the Vercel preview smoke test after adding the
-  project's Neon and Clerk credentials; a deployment cannot be created from this
-  workspace without those account credentials.
-
-## Sensible choices made
-
-- The logo at `public/logo.png` is a generated violet placeholder. Replace it
-  with the official AIVized asset; the same file is used as the favicon.
-- Rate limiting is in-memory per server instance. For multi-instance production
-  traffic, swap it for a shared store (e.g. Upstash Redis).
-- Follow-up dates are calculated from the date the previous message was logged,
-  so they stay correct even when a follow-up is sent late.
-- No-reply recomputation runs on page load and once daily through the
-  `CRON_SECRET`-protected `/api/cron/daily` route.
-- The Clerk provider is only mounted when a publishable key exists, so builds
-  and local screens work before keys are added.
-- Template rows keep stable stage keys (0/3/7/14) so existing data stays valid,
-  while the UI labels each slot with the configured follow-up days.
-- Exports are generated in memory with ExcelJS and streamed straight to the
-  browser; nothing is written to the local file system.
-- Imports are parsed in memory, previewed, duplicate-checked across the team,
-  then inserted in chunks. Imported leads keep the status from the file and do
-  not create synthetic activities.
-- Import uploads are capped at 5 MB and 1,000 rows; the server action body limit
-  is raised to 8 MB for the three-step upload/preview/import flow.
-- Excel is **not** the database. Postgres is the source of truth, and Excel
-  files are import/export snapshots only. Updating a lead in the app does not
-  modify a workbook on your computer; use the export buttons to download a
-  fresh copy. Live spreadsheet sync would require a Google Sheets or
-  OneDrive/Microsoft Graph integration, which is not included.
-- Security headers include frame denial, nosniff, a strict referrer policy, a
-  restrictive permissions policy and HSTS. User-entered text is rendered through
-  React (escaped, never as HTML), and server logs avoid personal data.
-- Every write action is rate-limited, and deletes, role/status changes, imports,
-  exports and reassignments are written to the audit log.
-- `npm audit --omit=dev` reports moderate transitive advisories inside
-  ExcelJS's archive tooling (`archiver`/`glob`/`uuid`). They are not reachable
-  from imported spreadsheet content in this app; monitor ExcelJS upstream rather
-  than forcing a breaking downgrade.
-- The theme uses a server-readable `theme` cookie plus CSS custom properties.
-  When no theme is chosen, `prefers-color-scheme` is the fallback. No `<script>`
-  is rendered in the React tree, avoiding the React 19 script-tag warning and
-  the pre-hydration flash for explicit light/dark choices.
