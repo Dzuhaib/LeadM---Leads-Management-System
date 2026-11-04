@@ -17,6 +17,7 @@ import { getAppTimeZone } from "@/lib/date";
 import { getLeadById } from "@/lib/leads";
 import { checkRateLimit, rateLimitKey } from "@/lib/rate-limit";
 import { getSettings } from "@/lib/settings";
+import { notifyReplyReceived } from "@/lib/email-notify";
 import { logFollowUpSchema, logReplySchema } from "@/lib/validation";
 
 async function requireActionUser() {
@@ -215,6 +216,13 @@ export async function logReply(input: unknown): Promise<ActionResult> {
 
     await touchUser(user.id);
     revalidateAll();
+    await notifyReplyReceived({
+      lead,
+      actor: { email: user.email, fullName: user.fullName, role: user.role },
+      replyTag: data.replyTag ?? null,
+      replyText: data.replyText ?? null,
+      occurredAt,
+    });
     return { ok: true };
   } catch (error) {
     return toActionError(error);

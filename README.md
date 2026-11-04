@@ -27,6 +27,9 @@ engine and dashboards are driven by an activity ledger stored in PostgreSQL.
 - **Reply tracking with tags** — logging a reply stops the sequence at once,
   and the admin Replies view (plus a "No reply" tab) shows every conversation
   with employee, channel, tag and date filters.
+- **Reply-received email notifications** — when a reply is logged, the lead
+  owner and the admin receive an email via Resend with the contact, channel,
+  reply tag and reply text, so nothing waits until the next dashboard visit.
 - **Message templates** — copy-ready templates for every channel with
   `[Name]` and `[Business]` auto-filled from the selected lead.
 - **Excel import with column mapping** — upload `.xlsx` or `.csv`, map the
@@ -97,6 +100,9 @@ Copy `.env.example` to `.env.local` and fill in the values:
 | `CLERK_WEBHOOK_SECRET` | Svix signing secret for the Clerk webhook |
 | `ADMIN_EMAIL` | The one verified email that becomes admin |
 | `CRON_SECRET` | Bearer secret for the daily no-reply cron route |
+| `RESEND_API_KEY` | Resend API key for reply notifications (skipped if unset) |
+| `EMAIL_FROM` | Verified sender address, e.g. `Leadm <leadm@aivized.com>` |
+| `APP_URL` | Public URL used in notification links, e.g. `https://leadm.aivized.com` |
 | `APP_TIMEZONE` | Default `Asia/Karachi` |
 
 Never commit `.env`, `.env.local`, or any secret. `.env.example` is committed on
