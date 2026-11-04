@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="400" viewBox="0 0 1200 400" role="img" aria-label="AIVized Lead Tracker banner">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b0817"/>
+      <stop offset="0.45" stop-color="#150d2e"/>
+      <stop offset="1" stop-color="#2b1a5e"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7c3aed"/>
+      <stop offset="0.5" stop-color="#a78bfa"/>
+      <stop offset="1" stop-color="#f0abfc"/>
+    </linearGradient>
+    <linearGradient id="glowLine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#a78bfa" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#a78bfa" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#a78bfa" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="0.85" cy="0.2" r="0.7">
+      <stop offset="0" stop-color="#8b5cf6" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#8b5cf6" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#a78bfa" stroke-opacity="0.07" stroke-width="1"/>
+    </pattern>
+    <linearGradient id="chip" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.10"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.03"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="400" fill="url(#bg)"/>
+  <rect width="1200" height="400" fill="url(#grid)"/>
+  <rect width="1200" height="400" fill="url(#halo)"/>
+
+  <g stroke="url(#accent)" stroke-width="2.5" fill="none" opacity="0.55" stroke-linecap="round">
+    <path d="M 60 330 C 150 300, 210 340, 300 305"/>
+    <circle cx="60" cy="330" r="5" fill="#a78bfa" stroke="none"/>
+    <circle cx="180" cy="318" r="4" fill="#c084fc" stroke="none"/>
+    <circle cx="300" cy="305" r="5" fill="#f0abfc" stroke="none"/>
+  </g>
+
+  <g opacity="0.9">
+    <circle cx="1130" cy="90" r="42" fill="none" stroke="#8b5cf6" stroke-opacity="0.25" stroke-width="1.5"/>
+    <circle cx="1130" cy="90" r="28" fill="none" stroke="#8b5cf6" stroke-opacity="0.4" stroke-width="1.5"/>
+    <text x="1130" y="101" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="30" font-weight="700" fill="#c4b5fd">%</text>
+    <circle cx="1055" cy="180" r="4" fill="#f0abfc" opacity="0.7"/>
+    <circle cx="1175" cy="215" r="3.5" fill="#a78bfa" opacity="0.7"/>
+  </g>
+
+  <g>
+    <rect x="470" y="72" width="260" height="36" rx="18" fill="url(#chip)" stroke="#a78bfa" stroke-opacity="0.45"/>
+    <circle cx="492" cy="90" r="5" fill="#a78bfa"/>
+    <text x="600" y="95" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="15" font-weight="600" letter-spacing="3" fill="#d8ccfd">LEAD TRACKER</text>
+  </g>
+
+  <text x="600" y="185" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="64" font-weight="800" fill="#ffffff" letter-spacing="-1">AIVized Lead Tracker</text>
+  <rect x="420" y="215" width="360" height="3" rx="1.5" fill="url(#glowLine)"/>
+  <text x="600" y="258" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="20" fill="#b9aee0">Never miss a follow-up on LinkedIn, WhatsApp or Facebook</text>
+
+  <g font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" text-anchor="middle">
+    <rect x="330" y="290" width="120" height="34" rx="17" fill="#3b2a75" stroke="#7c3aed" stroke-opacity="0.7"/>
+    <text x="390" y="311" fill="#e9defe">Day 0</text>
+    <rect x="475" y="290" width="120" height="34" rx="17" fill="#3b2a75" stroke="#7c3aed" stroke-opacity="0.7"/>
+    <text x="535" y="311" fill="#e9defe">Day 3</text>
+    <rect x="620" y="290" width="120" height="34" rx="17" fill="#3b2a75" stroke="#7c3aed" stroke-opacity="0.7"/>
+    <text x="680" y="311" fill="#e9defe">Day 7</text>
+    <rect x="765" y="290" width="120" height="34" rx="17" fill="#3b2a75" stroke="#7c3aed" stroke-opacity="0.7"/>
+    <text x="825" y="311" fill="#e9defe">Day 14</text>
+  </g>
+
+  <rect x="0" y="396" width="1200" height="4" fill="url(#accent)"/>
+</svg>

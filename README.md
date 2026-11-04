@@ -1,5 +1,9 @@
 # AIVized Lead Tracker
 
+<div align="center">
+  <img src="docs/banner.svg" alt="AIVized Lead Tracker — automated day 3/7/14 follow-ups for LinkedIn, WhatsApp and Facebook outreach" width="100%" />
+</div>
+
 A team lead tracker for LinkedIn, WhatsApp and Facebook outreach. Employees log
 first messages, day 3/7/14 follow-ups, replies and milestones. The follow-up
 engine and dashboards are driven by an activity ledger stored in PostgreSQL.
