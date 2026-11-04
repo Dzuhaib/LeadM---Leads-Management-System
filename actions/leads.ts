@@ -11,6 +11,7 @@ import { findDuplicateLeads, normalizeProfileUrl } from "@/lib/duplicates";
 import { deriveLeadName, getLeadById, getLeadTimeline } from "@/lib/leads";
 import { checkRateLimit, rateLimitKey } from "@/lib/rate-limit";
 import { leadInputSchema, leadUpdateSchema, bulkStatusSchema } from "@/lib/validation";
+import { notifyReplyReceived } from "@/lib/email-notify";
 import { z } from "zod";
 
 async function requireActionUser() {
@@ -174,6 +175,16 @@ export async function updateLead(input: unknown): Promise<ActionResult> {
       });
     }
 
+    if (data.status === "replied" && existing.status !== "replied") {
+      await notifyReplyReceived({
+        lead: { ...existing, status: "replied" },
+        actor: { email: user.email, fullName: user.fullName, role: user.role },
+        replyTag: null,
+        replyText: null,
+        occurredAt: new Date(),
+      });
+    }
+
     revalidateLeads();
     return { ok: true };
   } catch (error) {
@@ -235,7 +246,7 @@ export async function bulkUpdateLeadStatus(input: unknown): Promise<ActionResult
           );
 
     const matched = await db
-      .select({ id: leads.id, channel: leads.channel })
+      .select()
       .from(leads)
       .where(where);
     if (matched.length === 0) throw new ActionError("No matching leads found.");
@@ -254,6 +265,19 @@ export async function bulkUpdateLeadStatus(input: unknown): Promise<ActionResult
         note: `Status changed to ${data.status.replaceAll("_", " ")}.`,
       })),
     );
+
+    if (data.status === "replied") {
+      for (const row of matched) {
+        if (row.status === "replied") continue;
+        await notifyReplyReceived({
+          lead: { ...row, status: "replied" },
+          actor: { email: user.email, fullName: user.fullName, role: user.role },
+          replyTag: null,
+          replyText: null,
+          occurredAt: new Date(),
+        });
+      }
+    }
 
     await recordAudit({
       userId: user.id,

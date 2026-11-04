@@ -26,9 +26,9 @@ function appUrl() {
 export async function sendEmail(input: ResendSendInput): Promise<boolean> {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
-    if (process.env.NODE_ENV !== "production") {
-      console.warn("[email] RESEND_API_KEY is not set; skipping email send.");
-    }
+    console.error(
+      `[email] RESEND_API_KEY is not set. Skipped sending to ${input.to}.`,
+    );
     return false;
   }
 
