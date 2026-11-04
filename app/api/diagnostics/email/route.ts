@@ -1,6 +1,5 @@
 import { timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
-import { sendEmail } from "@/lib/email";
 
 export const dynamic = "force-dynamic";
 
