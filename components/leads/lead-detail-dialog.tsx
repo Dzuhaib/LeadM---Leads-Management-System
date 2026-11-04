@@ -87,6 +87,7 @@ export function LeadDetailDialog({
         <DialogHeader>
           <DialogTitle>{lead?.businessName ?? businessName}</DialogTitle>
           <DialogDescription>
+            {lead?.serviceWanted ? `${lead.serviceWanted} · ` : ""}
             {lead?.contactName ? `${lead.contactName} · ` : ""}
             {lead ? `${CHANNEL_LABELS[lead.channel]} outreach` : "Lead details"}
           </DialogDescription>
@@ -106,26 +107,46 @@ export function LeadDetailDialog({
               <span className="text-xs text-muted-foreground">
                 {lead.servicePitched}
               </span>
-              {lead.industry ? (
-                <span className="text-xs text-muted-foreground">
-                  · {lead.industry}
-                </span>
-              ) : null}
-              {lead.country ? (
-                <span className="text-xs text-muted-foreground">
-                  · {lead.country}
-                </span>
-              ) : null}
             </div>
 
             <div className="grid gap-3 text-sm sm:grid-cols-2">
-              <Detail label="Follow-up stage" value={`${lead.followUpStage} / 3`} />
+              <Detail
+                label="Service wanted"
+                value={lead.serviceWanted || "—"}
+              />
+              <Detail
+                label="Service pitched"
+                value={lead.servicePitched || "—"}
+              />
+              <Detail
+                label="Follow-up stage"
+                value={`${lead.followUpStage} / 3`}
+              />
               <Detail
                 label="Next follow-up"
                 value={formatDateTime(lead.nextFollowUpAt, timeZone)}
               />
-              <Detail label="Source" value={lead.source || "—"} />
-              <Detail label="Profile" value={lead.profileUrl || "—"} />
+              <div className="sm:col-span-2">
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  Source URL
+                </p>
+                {lead.profileUrl ? (
+                  <a
+                    href={
+                      lead.profileUrl.includes("://")
+                        ? lead.profileUrl
+                        : `https://${lead.profileUrl}`
+                    }
+                    target="_blank"
+                    rel="noreferrer"
+                    className="break-all text-primary underline-offset-4"
+                  >
+                    {lead.profileUrl}
+                  </a>
+                ) : (
+                  <p>—</p>
+                )}
+              </div>
               <Detail label="Email" value={lead.email || "—"} />
               <Detail label="Phone" value={lead.phone || "—"} />
             </div>

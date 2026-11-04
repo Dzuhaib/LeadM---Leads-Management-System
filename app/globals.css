@@ -35,94 +35,94 @@
   --color-ring: var(--ring);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-brand: #7c3aed;
-  --color-ink: #1b1033;
-  --color-clay: #bc542f;
-  --font-sans: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui,
-    -apple-system, "Segoe UI", sans-serif;
-  --radius-lg: 0.9rem;
-  --radius-md: 0.7rem;
+  --color-brand: #0071e3;
+  --color-ink: #1d1d1f;
+  --color-clay: #1d1d1f;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+    "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --radius-lg: 0.75rem;
+  --radius-md: 0.5rem;
 }
 
 :root {
-  --background: #fbfaff;
-  --foreground: #1b1033;
+  --background: #f5f5f7;
+  --foreground: #1d1d1f;
   --card: #ffffff;
-  --card-foreground: #1b1033;
+  --card-foreground: #1d1d1f;
   --popover: #ffffff;
-  --popover-foreground: #1b1033;
-  --primary: #7c3aed;
+  --popover-foreground: #1d1d1f;
+  --primary: #0071e3;
   --primary-foreground: #ffffff;
-  --secondary: #f4effe;
-  --secondary-foreground: #4c1d95;
-  --muted: #f4effe;
-  --muted-foreground: #6b6480;
-  --accent: #bc542f;
+  --secondary: #f5f5f7;
+  --secondary-foreground: #1d1d1f;
+  --muted: #f5f5f7;
+  --muted-foreground: #6e6e73;
+  --accent: #1d1d1f;
   --accent-foreground: #ffffff;
-  --destructive: #dc2626;
+  --destructive: #d70015;
   --destructive-foreground: #ffffff;
-  --success: #15803d;
-  --warning: #b45309;
-  --border: #e4dcf5;
-  --input: #e4dcf5;
-  --ring: #7c3aed;
+  --success: #248a3d;
+  --warning: #b25000;
+  --border: #d2d2d7;
+  --input: #d2d2d7;
+  --ring: #0071e3;
   --sidebar: #ffffff;
-  --sidebar-foreground: #1b1033;
+  --sidebar-foreground: #1d1d1f;
 }
 
 .dark {
-  --background: #120b24;
-  --foreground: #f5f1ff;
-  --card: #1b1033;
-  --card-foreground: #f5f1ff;
-  --popover: #1b1033;
-  --popover-foreground: #f5f1ff;
-  --primary: #8b5cf6;
+  --background: #000000;
+  --foreground: #f5f5f7;
+  --card: #1d1d1f;
+  --card-foreground: #f5f5f7;
+  --popover: #1d1d1f;
+  --popover-foreground: #f5f5f7;
+  --primary: #0a84ff;
   --primary-foreground: #ffffff;
-  --secondary: #2a1a4d;
-  --secondary-foreground: #e9defc;
-  --muted: #251643;
-  --muted-foreground: #b7a9d6;
-  --accent: #d97757;
-  --accent-foreground: #ffffff;
-  --destructive: #f87171;
-  --destructive-foreground: #1b1033;
-  --success: #4ade80;
-  --warning: #fbbf24;
-  --border: #38265e;
-  --input: #38265e;
-  --ring: #a78bfa;
-  --sidebar: #170d2e;
-  --sidebar-foreground: #f5f1ff;
+  --secondary: #2c2c2e;
+  --secondary-foreground: #f5f5f7;
+  --muted: #2c2c2e;
+  --muted-foreground: #a1a1a6;
+  --accent: #f5f5f7;
+  --accent-foreground: #1d1d1f;
+  --destructive: #ff453a;
+  --destructive-foreground: #ffffff;
+  --success: #30d158;
+  --warning: #ff9f0a;
+  --border: #424245;
+  --input: #424245;
+  --ring: #0a84ff;
+  --sidebar: #1d1d1f;
+  --sidebar-foreground: #f5f5f7;
 }
 
 /* Before hydration (and when the user has not chosen a theme) follow the OS. */
 @media (prefers-color-scheme: dark) {
   :root:not(.light):not(.dark) {
     color-scheme: dark;
-    --background: #120b24;
-    --foreground: #f5f1ff;
-    --card: #1b1033;
-    --card-foreground: #f5f1ff;
-    --popover: #1b1033;
-    --popover-foreground: #f5f1ff;
-    --primary: #8b5cf6;
+    --background: #000000;
+    --foreground: #f5f5f7;
+    --card: #1d1d1f;
+    --card-foreground: #f5f5f7;
+    --popover: #1d1d1f;
+    --popover-foreground: #f5f5f7;
+    --primary: #0a84ff;
     --primary-foreground: #ffffff;
-    --secondary: #2a1a4d;
-    --secondary-foreground: #e9defc;
-    --muted: #251643;
-    --muted-foreground: #b7a9d6;
-    --accent: #d97757;
-    --accent-foreground: #ffffff;
-    --destructive: #f87171;
-    --destructive-foreground: #1b1033;
-    --success: #4ade80;
-    --warning: #fbbf24;
-    --border: #38265e;
-    --input: #38265e;
-    --ring: #a78bfa;
-    --sidebar: #170d2e;
-    --sidebar-foreground: #f5f1ff;
+    --secondary: #2c2c2e;
+    --secondary-foreground: #f5f5f7;
+    --muted: #2c2c2e;
+    --muted-foreground: #a1a1a6;
+    --accent: #f5f5f7;
+    --accent-foreground: #1d1d1f;
+    --destructive: #ff453a;
+    --destructive-foreground: #ffffff;
+    --success: #30d158;
+    --warning: #ff9f0a;
+    --border: #424245;
+    --input: #424245;
+    --ring: #0a84ff;
+    --sidebar: #1d1d1f;
+    --sidebar-foreground: #f5f5f7;
   }
 }
 

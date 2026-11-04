@@ -82,10 +82,8 @@ export default async function AdminRepliesPage({
   ]);
 
   const tabClass = (active: boolean) =>
-    `inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-      active
-        ? "bg-card text-foreground shadow-sm"
-        : "text-muted-foreground hover:text-foreground"
+    `inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+      active ? "bg-card text-foreground" : "text-muted-foreground"
     }`;
 
   return (
@@ -217,7 +215,7 @@ export default async function AdminRepliesPage({
                           trigger={
                             <button
                               type="button"
-                              className="text-left font-semibold hover:text-primary hover:underline"
+                              className="text-left font-semibold"
                             >
                               {row.businessName}
                             </button>
@@ -347,7 +345,7 @@ export default async function AdminRepliesPage({
                           trigger={
                             <button
                               type="button"
-                              className="text-left font-semibold hover:text-primary hover:underline"
+                              className="text-left font-semibold"
                             >
                               {row.businessName}
                             </button>

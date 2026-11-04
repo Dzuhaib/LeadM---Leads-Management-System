@@ -30,11 +30,7 @@ const dateInput = z
 
 export const leadInputSchema = z.object({
   contactName: optionalText(160).default(""),
-  businessName: z
-    .string()
-    .trim()
-    .min(1, "Business name is required")
-    .max(200, "Business name is too long"),
+  businessName: optionalText(200),
   jobTitle: optionalText(160),
   industry: optionalText(160),
   country: optionalText(120),
@@ -52,6 +48,7 @@ export const leadInputSchema = z.object({
     ),
   phone: optionalText(60),
   observation: optionalText(2000),
+  serviceWanted: optionalText(200).default(""),
   servicePitched: z.enum(SERVICES),
   status: z.enum(LEAD_STATUSES).optional(),
   notes: optionalText(5000),

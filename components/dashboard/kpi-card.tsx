@@ -7,20 +7,20 @@ export function KpiCard({
   value,
   hint,
   icon: Icon,
-  tone = "violet",
+  tone = "blue",
 }: {
   label: string;
   value: string | number;
   hint?: string;
   icon: LucideIcon;
-  tone?: "violet" | "clay" | "emerald" | "sky";
+  tone?: "blue" | "clay" | "emerald" | "sky";
 }) {
   const toneClass = {
-    violet: "bg-secondary text-primary",
-    clay: "bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-200",
+    blue: "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-200",
+    clay: "bg-orange-50 text-orange-700 dark:bg-orange-950 dark:text-orange-200",
     emerald:
-      "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200",
-    sky: "bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-200",
+      "bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-200",
+    sky: "bg-cyan-50 text-cyan-700 dark:bg-cyan-950 dark:text-cyan-200",
   }[tone];
 
   return (

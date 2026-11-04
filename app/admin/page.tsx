@@ -226,7 +226,7 @@ export default async function AdminHomePage({
                         <TableCell className="sticky left-0 z-10 bg-card font-medium">
                           <Link
                             href={`/admin/employees/${member.id}`}
-                            className="hover:text-primary hover:underline"
+                            className="font-medium"
                           >
                             {member.fullName || member.email}
                           </Link>
@@ -304,7 +304,7 @@ export default async function AdminHomePage({
                       <div className="min-w-0">
                         <Link
                           href={`/admin/employees/${row.id}`}
-                          className="truncate text-sm font-semibold hover:text-primary hover:underline"
+                          className="truncate text-sm font-semibold"
                         >
                           {row.fullName || row.email}
                         </Link>
@@ -458,7 +458,7 @@ export default async function AdminHomePage({
                   <TableCell>
                     <Link
                       href={`/admin/employees/${row.id}`}
-                      className="font-medium hover:text-primary hover:underline"
+                      className="font-medium"
                     >
                       {row.fullName || row.email}
                     </Link>

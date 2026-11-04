@@ -26,7 +26,7 @@ export default async function PendingPage({
         <ThemeToggle />
       </header>
       <main className="flex flex-1 items-center justify-center px-4 py-16">
-        <div className="w-full max-w-md rounded-lg border border-border bg-card p-8 text-center shadow-sm">
+        <div className="w-full max-w-md rounded-xl border border-border bg-card p-8 text-center">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-secondary text-primary">
             {deactivated ? (
               <ShieldAlert className="h-6 w-6" />

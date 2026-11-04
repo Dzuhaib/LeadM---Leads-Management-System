@@ -17,7 +17,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { createLead, updateLead } from "@/actions/leads";
 import {
   CHANNELS,
@@ -94,60 +93,31 @@ export function LeadFormDialog({
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-xl">
         <DialogHeader>
           <DialogTitle>{isEdit ? "Edit lead" : "Add a new lead"}</DialogTitle>
           <DialogDescription>
             {isEdit
-              ? "Update the details for this lead."
-              : "Duplicates are checked across the whole team before saving."}
+              ? lead?.businessName
+                ? `Update ${lead.businessName}.`
+                : "Update the details for this lead."
+              : "Seven fields. Duplicates are checked across the team automatically."}
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="businessName">Business name *</Label>
+            <div className="space-y-2 sm:col-span-2">
+              <Label htmlFor="serviceWanted">Service they want *</Label>
               <Input
-                id="businessName"
-                name="businessName"
-                defaultValue={lead?.businessName ?? ""}
+                id="serviceWanted"
+                name="serviceWanted"
+                placeholder="What are they looking for?"
+                defaultValue={lead?.serviceWanted ?? ""}
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="contactName">Contact name</Label>
-              <Input
-                id="contactName"
-                name="contactName"
-                defaultValue={lead?.contactName ?? ""}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="jobTitle">Job title</Label>
-              <Input
-                id="jobTitle"
-                name="jobTitle"
-                defaultValue={lead?.jobTitle ?? ""}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="industry">Industry</Label>
-              <Input
-                id="industry"
-                name="industry"
-                defaultValue={lead?.industry ?? ""}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="country">Country</Label>
-              <Input
-                id="country"
-                name="country"
-                defaultValue={lead?.country ?? ""}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="channel">Channel</Label>
+              <Label htmlFor="channel">Channel *</Label>
               <Select
                 id="channel"
                 name="channel"
@@ -161,7 +131,7 @@ export function LeadFormDialog({
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="servicePitched">Service pitched</Label>
+              <Label htmlFor="servicePitched">Service pitched as it is *</Label>
               <Select
                 id="servicePitched"
                 name="servicePitched"
@@ -174,8 +144,21 @@ export function LeadFormDialog({
                 ))}
               </Select>
             </div>
+            <div className="space-y-2 sm:col-span-2">
+              <Label htmlFor="profileUrl">Source URL *</Label>
+              <Input
+                id="profileUrl"
+                name="profileUrl"
+                placeholder="https://linkedin.com/in/…"
+                defaultValue={lead?.profileUrl ?? ""}
+                required
+              />
+              <p className="text-xs text-muted-foreground">
+                The profile or post where you found this lead.
+              </p>
+            </div>
             <div className="space-y-2">
-              <Label htmlFor="status">Status</Label>
+              <Label htmlFor="status">Status as it is *</Label>
               <Select
                 id="status"
                 name="status"
@@ -189,65 +172,31 @@ export function LeadFormDialog({
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="source">Source</Label>
-              <Input
-                id="source"
-                name="source"
-                placeholder="LinkedIn search, Google Maps, referral…"
-                defaultValue={lead?.source ?? ""}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="profileUrl">Profile URL</Label>
-              <Input
-                id="profileUrl"
-                name="profileUrl"
-                placeholder="https://linkedin.com/in/…"
-                defaultValue={lead?.profileUrl ?? ""}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Email (optional)</Label>
               <Input
                 id="email"
                 name="email"
                 type="email"
+                placeholder="name@company.com"
                 defaultValue={lead?.email ?? ""}
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="phone">Phone</Label>
+            <div className="space-y-2 sm:col-span-2">
+              <Label htmlFor="phone">Phone number (optional)</Label>
               <Input
                 id="phone"
                 name="phone"
+                type="tel"
+                placeholder="+92 300 0000000"
                 defaultValue={lead?.phone ?? ""}
               />
             </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="observation">
-              Observation (the detail used in the first message)
-            </Label>
-            <Textarea
-              id="observation"
-              name="observation"
-              defaultValue={lead?.observation ?? ""}
-              placeholder="What did you notice about their business?"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="notes">Notes</Label>
-            <Textarea
-              id="notes"
-              name="notes"
-              defaultValue={lead?.notes ?? ""}
-            />
-          </div>
           {allowDuplicate ? (
-            <label className="flex items-start gap-2 rounded-md border border-border bg-secondary/40 p-3 text-sm">
+            <label className="flex items-start gap-3 rounded-lg border border-border bg-secondary/40 p-3 text-sm">
               <input
                 type="checkbox"
-                className="mt-0.5 h-4 w-4 rounded border-border accent-[#7C3AED]"
+                className="mt-0.5 h-4 w-4 rounded border-border accent-[#0071e3]"
                 checked={overrideDuplicate}
                 onChange={(event) => setOverrideDuplicate(event.target.checked)}
               />

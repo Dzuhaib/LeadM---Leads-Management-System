@@ -98,9 +98,9 @@ describe("Excel exports", () => {
     const sheet = workbook.getWorksheet("Leads")!;
     expect(sheet.rowCount).toBe(2);
     expect(sheet.views[0]?.state).toBe("frozen");
-    expect(fillColor(sheet.getCell("A1"))).toBe("FF7C3AED");
+    expect(fillColor(sheet.getCell("A1"))).toBe("FF0071E3");
     expect(sheet.getCell("L2").value).toBe("Contacted");
-    expect(fillColor(sheet.getCell("L2"))).toBe("FFEDE9FE");
+    expect(fillColor(sheet.getCell("L2"))).toBe("FFEFF6FF");
     expect(sheet.getColumn(16).numFmt).toBe("yyyy-mm-dd hh:mm");
   });
 

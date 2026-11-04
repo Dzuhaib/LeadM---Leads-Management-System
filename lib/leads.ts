@@ -16,7 +16,9 @@ import {
 import { db } from "@/db";
 import { activities, leads, users, type Lead } from "@/db/schema";
 import { fromZonedTime } from "date-fns-tz";
+import { CHANNEL_LABELS, type Channel } from "./constants";
 import { zonedDayBounds } from "./date";
+import { normalizeProfileUrl } from "./duplicates";
 import type { LeadListParams } from "./validation";
 
 export type LeadListResult = {
@@ -26,6 +28,48 @@ export type LeadListResult = {
   pageSize: number;
   totalPages: number;
 };
+
+function titleCase(value: string) {
+  return value
+    .replace(/[-_]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\b\w/g, (character) => character.toUpperCase());
+}
+
+export function deriveLeadName(input: {
+  sourceUrl?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  serviceWanted?: string | null;
+  channel: Channel;
+}) {
+  const normalizedUrl = normalizeProfileUrl(input.sourceUrl);
+  if (normalizedUrl) {
+    try {
+      const url = new URL(
+        normalizedUrl.includes("://") ? normalizedUrl : `https://${normalizedUrl}`,
+      );
+      const segments = url.pathname.split("/").filter(Boolean);
+      const lastSegment = segments.at(-1);
+      if (lastSegment) {
+        const label = titleCase(decodeURIComponent(lastSegment));
+        if (label) return label;
+      }
+      if (url.hostname) return url.hostname.replace(/^www\./, "");
+    } catch {
+      // Fall through to the other identifiers.
+    }
+  }
+  if (input.email) {
+    const local = input.email.split("@")[0]?.replace(/[._-]+/g, " ").trim();
+    if (local) return titleCase(local);
+    return input.email;
+  }
+  if (input.phone) return input.phone;
+  if (input.serviceWanted) return input.serviceWanted;
+  return `${CHANNEL_LABELS[input.channel]} lead`;
+}
 
 export async function listLeads(
   ownerId: string,

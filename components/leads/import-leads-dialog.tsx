@@ -201,7 +201,7 @@ export function ImportLeadsDialog() {
                 accept=".xlsx,.csv"
                 onChange={handleFileChange}
                 aria-label="Import file"
-                className="max-w-[15rem] text-sm file:mr-3 file:rounded-md file:border-0 file:bg-secondary file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-secondary-foreground hover:file:bg-secondary/80"
+                className="max-w-[15rem] text-sm file:mr-3 file:rounded-md file:border-0 file:bg-secondary file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-secondary-foreground"
               />
               <Button
                 type="button"

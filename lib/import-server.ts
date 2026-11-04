@@ -18,6 +18,7 @@ import {
   normalizeBusinessName,
   normalizeProfileUrl,
 } from "@/lib/duplicates";
+import { deriveLeadName } from "@/lib/leads";
 import {
   emptyImportValues,
   parseImportMapping,
@@ -210,6 +211,10 @@ function prepareRow(values: Record<ImportFieldKey, string>):
   | { errors: string[] }
   | { errors: []; prepared: PreparedRow } {
   const errors: string[] = [];
+
+  if (!values.businessName.trim()) {
+    errors.push("Business name is required for imports.");
+  }
 
   const channel: Channel | null = values.channel.trim()
     ? matchOption(values.channel, CHANNELS, CHANNEL_LABELS)
@@ -438,10 +443,19 @@ export async function importLeadsFromFile(
 
   function toInsert(row: PreparedRow) {
     const data = row.payload;
+    const businessName =
+      data.businessName?.trim() ||
+      deriveLeadName({
+        sourceUrl: data.profileUrl,
+        email: data.email,
+        phone: data.phone,
+        serviceWanted: data.serviceWanted,
+        channel: data.channel,
+      });
     return {
       ownerId,
       contactName: data.contactName ?? "",
-      businessName: data.businessName,
+      businessName,
       jobTitle: data.jobTitle ?? null,
       industry: data.industry ?? null,
       country: data.country ?? null,
@@ -451,6 +465,7 @@ export async function importLeadsFromFile(
       email: data.email ?? null,
       phone: data.phone ?? null,
       observation: data.observation ?? null,
+      serviceWanted: data.serviceWanted || null,
       servicePitched: data.servicePitched,
       status: data.status ?? "new",
       notes: data.notes ?? null,

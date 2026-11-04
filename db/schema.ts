@@ -95,6 +95,7 @@ export const leads = pgTable(
     email: text("email"),
     phone: text("phone"),
     observation: text("observation"),
+    serviceWanted: text("service_wanted"),
     servicePitched: servicePitchedEnum("service_pitched").notNull().default("AI Systems"),
     status: leadStatusEnum("status").notNull().default("new"),
     nextFollowUpAt: timestamp("next_follow_up_at", { withTimezone: true }),

@@ -6,10 +6,12 @@ export function Logo({
   href = "/",
   className,
   showText = true,
+  size = 34,
 }: {
   href?: string;
   className?: string;
   showText?: boolean;
+  size?: number;
 }) {
   return (
     <Link
@@ -20,13 +22,13 @@ export function Logo({
       <Image
         src="/logo.png"
         alt="AIVized logo"
-        width={34}
-        height={34}
+        width={size}
+        height={size}
         className="rounded-lg"
         priority
       />
       {showText ? (
-        <span className="text-lg font-bold tracking-tight text-foreground">
+        <span className="text-lg font-semibold tracking-tight text-current">
           AIVized
         </span>
       ) : null}

@@ -8,7 +8,7 @@ import { getCurrentDbUser } from "@/lib/auth";
 import { ActionError, toActionError, type ActionResult } from "@/lib/action-result";
 import { recordAudit } from "@/lib/audit";
 import { findDuplicateLeads, normalizeProfileUrl } from "@/lib/duplicates";
-import { getLeadById, getLeadTimeline } from "@/lib/leads";
+import { deriveLeadName, getLeadById, getLeadTimeline } from "@/lib/leads";
 import { checkRateLimit, rateLimitKey } from "@/lib/rate-limit";
 import { leadInputSchema, leadUpdateSchema, bulkStatusSchema } from "@/lib/validation";
 import { z } from "zod";
@@ -43,10 +43,19 @@ export async function createLead(input: unknown): Promise<ActionResult<{ id: str
     enforceRateLimit(user.id, "lead:create");
 
     const data = leadInputSchema.parse(input);
+    const businessName =
+      data.businessName?.trim() ||
+      deriveLeadName({
+        sourceUrl: data.profileUrl,
+        email: data.email,
+        phone: data.phone,
+        serviceWanted: data.serviceWanted,
+        channel: data.channel,
+      });
 
     const duplicates = await findDuplicateLeads({
       profileUrl: data.profileUrl,
-      businessName: data.businessName,
+      businessName,
     });
 
     if (duplicates.length > 0 && !(user.role === "admin" && data.allowDuplicate)) {
@@ -61,7 +70,7 @@ export async function createLead(input: unknown): Promise<ActionResult<{ id: str
       .values({
         ownerId: user.id,
         contactName: data.contactName ?? "",
-        businessName: data.businessName,
+        businessName,
         jobTitle: data.jobTitle ?? null,
         industry: data.industry ?? null,
         country: data.country ?? null,
@@ -71,6 +80,7 @@ export async function createLead(input: unknown): Promise<ActionResult<{ id: str
         email: data.email ?? null,
         phone: data.phone ?? null,
         observation: data.observation ?? null,
+        serviceWanted: data.serviceWanted || null,
         servicePitched: data.servicePitched,
         status: data.status ?? "new",
         notes: data.notes ?? null,
@@ -82,7 +92,7 @@ export async function createLead(input: unknown): Promise<ActionResult<{ id: str
       action: "lead_created",
       entity: "lead",
       entityId: created.id,
-      details: { businessName: data.businessName },
+      details: { businessName },
     });
 
     revalidateLeads();
@@ -139,6 +149,9 @@ export async function updateLead(input: unknown): Promise<ActionResult> {
         ...(data.email !== undefined ? { email: data.email } : {}),
         ...(data.phone !== undefined ? { phone: data.phone } : {}),
         ...(data.observation !== undefined ? { observation: data.observation } : {}),
+        ...(data.serviceWanted !== undefined
+          ? { serviceWanted: data.serviceWanted }
+          : {}),
         ...(data.servicePitched !== undefined
           ? { servicePitched: data.servicePitched }
           : {}),

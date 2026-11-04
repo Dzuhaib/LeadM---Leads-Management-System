@@ -100,14 +100,14 @@ export function AdminLeadsTable({
                   aria-label="Select all leads on this page"
                   checked={allSelected}
                   onChange={toggleAll}
-                  className="h-4 w-4 rounded border-border accent-[#7C3AED]"
+                  className="h-4 w-4 rounded border-border accent-[#0071e3]"
                 />
               </TableHead>
-              <TableHead>Business</TableHead>
+              <TableHead>Lead</TableHead>
               <TableHead>Owner</TableHead>
               <TableHead>Channel</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>Service</TableHead>
+              <TableHead>Service wanted</TableHead>
               <TableHead>Next follow-up</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -121,7 +121,7 @@ export function AdminLeadsTable({
                     aria-label={`Select ${lead.businessName}`}
                     checked={selected.has(lead.id)}
                     onChange={() => toggle(lead.id)}
-                    className="h-4 w-4 rounded border-border accent-[#7C3AED]"
+                    className="h-4 w-4 rounded border-border accent-[#0071e3]"
                   />
                 </TableCell>
                 <TableCell>
@@ -132,14 +132,17 @@ export function AdminLeadsTable({
                     trigger={
                       <button
                         type="button"
-                        className="text-left font-semibold text-foreground hover:text-primary hover:underline"
+                        className="text-left font-semibold text-foreground"
                       >
                         {lead.businessName}
                       </button>
                     }
                   />
                   <p className="text-xs text-muted-foreground">
-                    {lead.contactName || "No contact name"}
+                    {lead.serviceWanted ||
+                      lead.email ||
+                      lead.phone ||
+                      "No service noted"}
                   </p>
                 </TableCell>
                 <TableCell>
@@ -156,8 +159,11 @@ export function AdminLeadsTable({
                 <TableCell>
                   <StatusBadge status={lead.status as LeadStatus} />
                 </TableCell>
-                <TableCell className="text-sm text-muted-foreground">
-                  {lead.servicePitched}
+                <TableCell className="text-sm">
+                  <p>{lead.serviceWanted || "—"}</p>
+                  <p className="text-xs text-muted-foreground">
+                    Pitched: {lead.servicePitched}
+                  </p>
                 </TableCell>
                 <TableCell className="text-sm text-muted-foreground">
                   {formatDateTime(lead.nextFollowUpAt, timeZone)}

@@ -112,7 +112,7 @@ export function PerformanceTable({
                 <button
                   type="button"
                   onClick={() => toggleSort(column.key)}
-                  className="inline-flex items-center gap-1 rounded-sm uppercase tracking-wide hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="inline-flex items-center gap-1 rounded-sm uppercase tracking-wide focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   {column.label}
                   {active ? (
@@ -146,7 +146,7 @@ export function PerformanceTable({
               <TableCell>
                 <Link
                   href={`/admin/employees/${row.id}`}
-                  className="font-semibold text-foreground hover:text-primary hover:underline"
+                  className="font-semibold text-foreground"
                 >
                   {row.fullName || row.email}
                 </Link>

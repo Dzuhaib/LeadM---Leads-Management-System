@@ -60,7 +60,7 @@ export function MessagesBarChart({
         <XAxis dataKey="label" {...axisProps} />
         <YAxis allowDecimals={false} {...axisProps} />
         <Tooltip contentStyle={tooltipStyle} />
-        <Bar dataKey="value" name="Messages" fill="#7C3AED" radius={[6, 6, 0, 0]} />
+        <Bar dataKey="value" name="Messages" fill="#0071e3" radius={[6, 6, 0, 0]} />
       </BarChart>
     </ResponsiveContainer>
   );
@@ -84,9 +84,9 @@ export function RepliesLineChart({
           type="monotone"
           dataKey="value"
           name="Replies"
-          stroke="#BC542F"
+          stroke="#86868b"
           strokeWidth={2.5}
-          dot={{ r: 3, fill: "#BC542F" }}
+          dot={{ r: 3, fill: "#86868b" }}
         />
       </LineChart>
     </ResponsiveContainer>
@@ -110,8 +110,8 @@ export function ChannelBreakdownChart({
         <XAxis dataKey="label" {...axisProps} />
         <YAxis allowDecimals={false} {...axisProps} />
         <Tooltip contentStyle={tooltipStyle} />
-        <Bar dataKey="messages" name="Messages" fill="#7C3AED" radius={[6, 6, 0, 0]} />
-        <Bar dataKey="replies" name="Replies" fill="#BC542F" radius={[6, 6, 0, 0]} />
+        <Bar dataKey="messages" name="Messages" fill="#0071e3" radius={[6, 6, 0, 0]} />
+        <Bar dataKey="replies" name="Replies" fill="#86868b" radius={[6, 6, 0, 0]} />
       </BarChart>
     </ResponsiveContainer>
   );
@@ -126,7 +126,14 @@ export function FunnelChart({
     ...row,
     label: LEAD_STATUS_LABELS[row.status] ?? row.status,
   }));
-  const colors = ["#A78BFA", "#8B5CF6", "#7C3AED", "#6D28D9", "#5B21B6", "#4C1D95"];
+  const colors = [
+    "#0071e3",
+    "#30b0c7",
+    "#34c759",
+    "#ff9f0a",
+    "#ff3b30",
+    "#86868b",
+  ];
   return (
     <ResponsiveContainer width="100%" height={240}>
       <BarChart

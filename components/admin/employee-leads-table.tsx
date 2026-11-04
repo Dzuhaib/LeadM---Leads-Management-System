@@ -34,10 +34,10 @@ export function EmployeeLeadsTable({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Business</TableHead>
+            <TableHead>Lead</TableHead>
             <TableHead>Channel</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead>Service</TableHead>
+            <TableHead>Service wanted</TableHead>
             <TableHead>Next follow-up</TableHead>
             <TableHead className="text-right">Details</TableHead>
           </TableRow>
@@ -48,7 +48,10 @@ export function EmployeeLeadsTable({
               <TableCell>
                 <p className="font-semibold">{lead.businessName}</p>
                 <p className="text-xs text-muted-foreground">
-                  {lead.contactName || "No contact name"}
+                  {lead.serviceWanted ||
+                    lead.email ||
+                    lead.phone ||
+                    "No service noted"}
                 </p>
               </TableCell>
               <TableCell className="text-sm">
@@ -57,8 +60,11 @@ export function EmployeeLeadsTable({
               <TableCell>
                 <StatusBadge status={lead.status as LeadStatus} />
               </TableCell>
-              <TableCell className="text-sm text-muted-foreground">
-                {lead.servicePitched}
+              <TableCell className="text-sm">
+                <p>{lead.serviceWanted || "—"}</p>
+                <p className="text-xs text-muted-foreground">
+                  Pitched: {lead.servicePitched}
+                </p>
               </TableCell>
               <TableCell className="text-sm text-muted-foreground">
                 {formatDateTime(lead.nextFollowUpAt, timeZone)}

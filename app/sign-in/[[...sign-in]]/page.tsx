@@ -9,13 +9,13 @@ export default function SignInPage() {
 
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
-      <div className="relative hidden flex-col justify-between bg-[#1B1033] p-10 text-white lg:flex">
+      <div className="relative hidden flex-col justify-between bg-black p-10 text-white lg:flex">
         <Logo href="/" />
         <div className="space-y-4">
           <p className="inline-flex w-fit rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
             Outreach workspace
           </p>
-          <h1 className="max-w-md text-4xl font-extrabold leading-tight">
+          <h1 className="max-w-md text-4xl font-semibold leading-tight">
             Every message, follow-up and reply in one place.
           </h1>
           <p className="max-w-md text-sm text-white/70">
@@ -34,7 +34,13 @@ export default function SignInPage() {
           </div>
           <ThemeToggle />
         </header>
-        <main className="flex flex-1 items-center justify-center px-4 pb-12">
+        <main className="flex flex-1 flex-col items-center justify-center px-4 pb-12">
+          <div className="mb-6 flex flex-col items-center gap-2 text-center">
+            <Logo href="/" showText={false} size={56} />
+            <p className="text-base font-semibold text-foreground">
+              AIVized Lead Tracker
+            </p>
+          </div>
           {configured ? (
             <SignIn />
           ) : (

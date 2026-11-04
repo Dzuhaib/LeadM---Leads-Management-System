@@ -31,7 +31,7 @@ function Progress({
     >
       <div
         className={cn(
-          "h-full rounded-full bg-primary transition-all",
+          "h-full rounded-full bg-primary",
           indicatorClassName,
         )}
         style={{ width: `${percent}%` }}

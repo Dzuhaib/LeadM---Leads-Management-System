@@ -12,6 +12,7 @@ import {
   Settings2,
   ShieldCheck,
   UserCog,
+  UserRound,
   Users,
   X,
 } from "lucide-react";
@@ -32,6 +33,7 @@ const employeeNav = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/leads", label: "Leads", icon: Users },
   { href: "/templates", label: "Templates", icon: MessageSquareText },
+  { href: "/profile", label: "Profile", icon: UserRound },
 ];
 
 const adminNav = [
@@ -71,10 +73,10 @@ export function AppShell({
             onClick={() => setMobileOpen(false)}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               active
-                ? "bg-secondary text-primary"
-                : "text-muted-foreground hover:bg-secondary/70 hover:text-foreground",
+                ? "bg-secondary text-foreground"
+                : "text-muted-foreground",
             )}
           >
             <item.icon className="h-4 w-4" />
@@ -95,7 +97,7 @@ export function AppShell({
         <div className="space-y-3">
           <Link
             href="/privacy"
-            className="block px-3 text-xs text-muted-foreground hover:text-foreground"
+            className="block px-3 text-xs text-muted-foreground"
           >
             Privacy &amp; messaging rules
           </Link>
@@ -108,7 +110,7 @@ export function AppShell({
           <button
             type="button"
             aria-label="Close navigation"
-            className="absolute inset-0 bg-[#1b1033]/50"
+            className="absolute inset-0 bg-black/40"
             onClick={() => setMobileOpen(false)}
           />
           <div className="absolute inset-y-0 left-0 flex w-72 flex-col border-r border-border bg-sidebar p-4">
@@ -129,7 +131,7 @@ export function AppShell({
             </div>
             <Link
               href="/privacy"
-              className="mb-3 px-3 text-xs text-muted-foreground hover:text-foreground"
+              className="mb-3 px-3 text-xs text-muted-foreground"
               onClick={() => setMobileOpen(false)}
             >
               Privacy &amp; messaging rules
@@ -140,7 +142,7 @@ export function AppShell({
       ) : null}
 
       <div className="lg:pl-64">
-        <header className="sticky top-0 z-20 flex h-16 items-center justify-between gap-3 border-b border-border bg-background/90 px-4 backdrop-blur lg:px-8">
+        <header className="sticky top-0 z-20 flex h-16 items-center justify-between gap-3 border-b border-border bg-background px-4 lg:px-8">
           <div className="flex items-center gap-3">
             <Button
               type="button"
@@ -155,6 +157,12 @@ export function AppShell({
             <div className="lg:hidden">
               <Logo href={home} showText={false} />
             </div>
+            <Logo
+              href={home}
+              showText={false}
+              size={24}
+              className="hidden lg:inline-flex"
+            />
             <span className="hidden text-sm font-medium text-muted-foreground sm:block">
               Lead outreach workspace
             </span>

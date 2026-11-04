@@ -13,16 +13,16 @@ import {
   type ServicePitched,
 } from "@/lib/constants";
 
-const HEADER_COLOR = "FF7C3AED";
-const BORDER_COLOR = "FFE5E7EB";
+const HEADER_COLOR = "FF0071E3";
+const BORDER_COLOR = "FFD2D2D7";
 
 const STATUS_STYLES: Record<string, { fill: string; font: string }> = {
   new: { fill: "FFF1F5F9", font: "FF334155" },
-  contacted: { fill: "FFEDE9FE", font: "FF5B21B6" },
-  replied: { fill: "FFE0F2FE", font: "FF075985" },
-  "call booked": { fill: "FFFEF3C7", font: "FF92400E" },
-  "proposal sent": { fill: "FFFAE8FF", font: "FF86198F" },
-  won: { fill: "FFD1FAE5", font: "FF065F46" },
+  contacted: { fill: "FFEFF6FF", font: "FF1D4ED8" },
+  replied: { fill: "FFF0FDFA", font: "FF0F766E" },
+  "call booked": { fill: "FFFFFBEB", font: "FF92400E" },
+  "proposal sent": { fill: "FFECFEFF", font: "FF0E7490" },
+  won: { fill: "FFF0FDF4", font: "FF15803D" },
   lost: { fill: "FFFFE4E6", font: "FF9F1239" },
   "no reply": { fill: "FFFFEDD5", font: "FF9A3412" },
 };

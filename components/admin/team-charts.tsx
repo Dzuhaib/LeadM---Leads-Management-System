@@ -13,16 +13,16 @@ import {
 import { format, parseISO } from "date-fns";
 
 const COLORS = [
-  "#7C3AED",
-  "#BC542F",
-  "#0EA5E9",
-  "#10B981",
-  "#F59E0B",
-  "#EC4899",
-  "#6366F1",
-  "#14B8A6",
-  "#D946EF",
-  "#64748B",
+  "#0071e3",
+  "#30b0c7",
+  "#34c759",
+  "#ff9f0a",
+  "#ff3b30",
+  "#86868b",
+  "#0040dd",
+  "#63e6e2",
+  "#ffd60a",
+  "#1d1d1f",
 ];
 
 const tooltipStyle = {
