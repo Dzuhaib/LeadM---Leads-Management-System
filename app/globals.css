@@ -1,0 +1,163 @@
+@import "tailwindcss";
+
+@custom-variant dark {
+  &:where(.dark, .dark *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where(:root:not(.light):not(.dark) *) {
+      @slot;
+    }
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-brand: #7c3aed;
+  --color-ink: #1b1033;
+  --color-clay: #bc542f;
+  --font-sans: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui,
+    -apple-system, "Segoe UI", sans-serif;
+  --radius-lg: 0.9rem;
+  --radius-md: 0.7rem;
+}
+
+:root {
+  --background: #fbfaff;
+  --foreground: #1b1033;
+  --card: #ffffff;
+  --card-foreground: #1b1033;
+  --popover: #ffffff;
+  --popover-foreground: #1b1033;
+  --primary: #7c3aed;
+  --primary-foreground: #ffffff;
+  --secondary: #f4effe;
+  --secondary-foreground: #4c1d95;
+  --muted: #f4effe;
+  --muted-foreground: #6b6480;
+  --accent: #bc542f;
+  --accent-foreground: #ffffff;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --success: #15803d;
+  --warning: #b45309;
+  --border: #e4dcf5;
+  --input: #e4dcf5;
+  --ring: #7c3aed;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1b1033;
+}
+
+.dark {
+  --background: #120b24;
+  --foreground: #f5f1ff;
+  --card: #1b1033;
+  --card-foreground: #f5f1ff;
+  --popover: #1b1033;
+  --popover-foreground: #f5f1ff;
+  --primary: #8b5cf6;
+  --primary-foreground: #ffffff;
+  --secondary: #2a1a4d;
+  --secondary-foreground: #e9defc;
+  --muted: #251643;
+  --muted-foreground: #b7a9d6;
+  --accent: #d97757;
+  --accent-foreground: #ffffff;
+  --destructive: #f87171;
+  --destructive-foreground: #1b1033;
+  --success: #4ade80;
+  --warning: #fbbf24;
+  --border: #38265e;
+  --input: #38265e;
+  --ring: #a78bfa;
+  --sidebar: #170d2e;
+  --sidebar-foreground: #f5f1ff;
+}
+
+/* Before hydration (and when the user has not chosen a theme) follow the OS. */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light):not(.dark) {
+    color-scheme: dark;
+    --background: #120b24;
+    --foreground: #f5f1ff;
+    --card: #1b1033;
+    --card-foreground: #f5f1ff;
+    --popover: #1b1033;
+    --popover-foreground: #f5f1ff;
+    --primary: #8b5cf6;
+    --primary-foreground: #ffffff;
+    --secondary: #2a1a4d;
+    --secondary-foreground: #e9defc;
+    --muted: #251643;
+    --muted-foreground: #b7a9d6;
+    --accent: #d97757;
+    --accent-foreground: #ffffff;
+    --destructive: #f87171;
+    --destructive-foreground: #1b1033;
+    --success: #4ade80;
+    --warning: #fbbf24;
+    --border: #38265e;
+    --input: #38265e;
+    --ring: #a78bfa;
+    --sidebar: #170d2e;
+    --sidebar-foreground: #f5f1ff;
+  }
+}
+
+* {
+  border-color: var(--border);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--primary) 25%, transparent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.card-surface {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
