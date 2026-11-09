@@ -181,6 +181,30 @@ export const messageTemplates = pgTable(
   ],
 );
 
+export const socialPosts = pgTable(
+  "social_posts",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    authorId: uuid("author_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    imageUrl: text("image_url").notNull(),
+    linkUrl: text("link_url").notNull(),
+    deletedAt: timestamp("deleted_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    index("social_posts_author_idx").on(table.authorId),
+    index("social_posts_created_idx").on(table.createdAt),
+  ],
+);
+
 export const auditLog = pgTable(
   "audit_log",
   {
@@ -207,4 +231,6 @@ export type Activity = typeof activities.$inferSelect;
 export type NewActivity = typeof activities.$inferInsert;
 export type Settings = typeof settings.$inferSelect;
 export type MessageTemplate = typeof messageTemplates.$inferSelect;
+export type SocialPost = typeof socialPosts.$inferSelect;
+export type NewSocialPost = typeof socialPosts.$inferInsert;
 export type AuditLog = typeof auditLog.$inferSelect;

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   ContactRound,
+  Images,
   LayoutDashboard,
   LockKeyhole,
   Menu,
@@ -60,6 +61,7 @@ function getSidebarServerSnapshot() {
 const employeeNav = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/leads", label: "Leads", icon: ContactRound },
+  { href: "/posts", label: "Social posts", icon: Images },
   { href: "/templates", label: "Templates", icon: MessageSquareText },
   { href: "/profile", label: "Profile", icon: UserRound },
 ];
@@ -69,6 +71,7 @@ const adminNav = [
   { href: "/admin/replies", label: "Replies", icon: MessageSquareReply },
   { href: "/admin/employees", label: "Employees", icon: UserCog },
   { href: "/admin/leads", label: "Team leads", icon: Users },
+  { href: "/admin/posts", label: "Team posts", icon: Images },
   { href: "/admin/settings", label: "Settings", icon: Settings2 },
   { href: "/admin/audit", label: "Audit log", icon: ScrollText },
 ];

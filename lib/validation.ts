@@ -28,6 +28,15 @@ const dateInput = z
     "Enter a valid date",
   );
 
+function isHttpUrl(value: string) {
+  try {
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
 export const leadInputSchema = z.object({
   contactName: optionalText(160).default(""),
   businessName: optionalText(200),
@@ -60,6 +69,43 @@ export type LeadInput = z.infer<typeof leadInputSchema>;
 export const leadUpdateSchema = leadInputSchema.partial().extend({
   id: z.string().uuid(),
 });
+
+export const socialPostInputSchema = z.object({
+  title: z
+    .string()
+    .trim()
+    .min(1, "Title is required")
+    .max(200, "Title is too long"),
+  imageUrl: z
+    .string()
+    .trim()
+    .min(1, "Image URL is required")
+    .max(2000, "Image URL is too long")
+    .refine(isHttpUrl, "Enter a valid image URL"),
+  linkUrl: z
+    .string()
+    .trim()
+    .min(1, "Link is required")
+    .max(2000, "Link is too long")
+    .refine(isHttpUrl, "Enter a valid link"),
+});
+
+export type SocialPostInput = z.infer<typeof socialPostInputSchema>;
+
+export const socialPostUpdateSchema = socialPostInputSchema.partial().extend({
+  id: z.string().uuid(),
+});
+
+export const socialPostListParamsSchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  pageSize: z.coerce.number().int().min(5).max(100).default(12),
+  q: z.string().trim().max(200).optional(),
+  author: z.string().uuid().optional(),
+  sort: z.enum(["created_at", "title"]).default("created_at"),
+  dir: z.enum(["asc", "desc"]).default("desc"),
+});
+
+export type SocialPostListParams = z.infer<typeof socialPostListParamsSchema>;
 
 export const activityInputSchema = z.object({
   leadId: z.string().uuid(),
