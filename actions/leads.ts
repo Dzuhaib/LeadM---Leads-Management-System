@@ -12,6 +12,8 @@ import { deriveLeadName, getLeadById, getLeadTimeline } from "@/lib/leads";
 import { checkRateLimit, rateLimitKey } from "@/lib/rate-limit";
 import { leadInputSchema, leadUpdateSchema, bulkStatusSchema } from "@/lib/validation";
 import { notifyReplyReceived } from "@/lib/email-notify";
+import { firstMessageTransition } from "@/lib/follow-up";
+import { getSettings } from "@/lib/settings";
 import { z } from "zod";
 
 async function requireActionUser() {
@@ -66,6 +68,11 @@ export async function createLead(input: unknown): Promise<ActionResult<{ id: str
       );
     }
 
+    const settingsRow = await getSettings();
+    const contactedOnCreate = (data.status ?? "new") === "contacted";
+    const now = new Date();
+    const createTransition = firstMessageTransition(now, settingsRow.followUpDays);
+
     const [created] = await db
       .insert(leads)
       .values({
@@ -85,8 +92,24 @@ export async function createLead(input: unknown): Promise<ActionResult<{ id: str
         servicePitched: data.servicePitched,
         status: data.status ?? "new",
         notes: data.notes ?? null,
+        ...(contactedOnCreate
+          ? {
+              followUpStage: createTransition.followUpStage,
+              nextFollowUpAt: createTransition.nextFollowUpAt,
+            }
+          : {}),
       })
       .returning({ id: leads.id });
+
+    if (contactedOnCreate) {
+      await db.insert(activities).values({
+        leadId: created.id,
+        userId: user.id,
+        type: "dm_sent",
+        channel: data.channel,
+        occurredAt: now,
+      });
+    }
 
     await recordAudit({
       userId: user.id,
@@ -134,6 +157,14 @@ export async function updateLead(input: unknown): Promise<ActionResult> {
       }
     }
 
+    const statusChangedToContacted =
+      data.status !== undefined && data.status === "contacted" && existing.status !== "contacted";
+    const scheduleFollowUp =
+      statusChangedToContacted && existing.nextFollowUpAt === null;
+    const transition = scheduleFollowUp
+      ? firstMessageTransition(new Date(), (await getSettings()).followUpDays)
+      : null;
+
     await db
       .update(leads)
       .set({
@@ -158,9 +189,25 @@ export async function updateLead(input: unknown): Promise<ActionResult> {
           : {}),
         ...(data.notes !== undefined ? { notes: data.notes } : {}),
         ...(data.status !== undefined ? { status: data.status } : {}),
+        ...(transition
+          ? {
+              followUpStage: transition.followUpStage,
+              nextFollowUpAt: transition.nextFollowUpAt,
+            }
+          : {}),
         updatedAt: new Date(),
       })
       .where(eq(leads.id, existing.id));
+
+    if (statusChangedToContacted) {
+      await db.insert(activities).values({
+        leadId: existing.id,
+        userId: user.id,
+        type: "dm_sent",
+        channel: existing.channel,
+        occurredAt: new Date(),
+      });
+    }
 
     if (user.role === "admin") {
       await recordAudit({
@@ -251,20 +298,56 @@ export async function bulkUpdateLeadStatus(input: unknown): Promise<ActionResult
       .where(where);
     if (matched.length === 0) throw new ActionError("No matching leads found.");
 
+    const now = new Date();
+    const remainingContactable =
+      data.status === "contacted"
+        ? matched.filter(
+            (row) => row.status !== "contacted" && row.nextFollowUpAt === null,
+          )
+        : [];
+    const scheduleTransition =
+      remainingContactable.length > 0
+        ? firstMessageTransition(now, (await getSettings()).followUpDays)
+        : null;
+
     await db
       .update(leads)
-      .set({ status: data.status, updatedAt: new Date() })
+      .set({ status: data.status, updatedAt: now })
       .where(where);
 
-    await db.insert(activities).values(
-      matched.map((row) => ({
+    if (scheduleTransition) {
+      for (const row of remainingContactable) {
+        await db
+          .update(leads)
+          .set({
+            followUpStage: scheduleTransition.followUpStage,
+            nextFollowUpAt: scheduleTransition.nextFollowUpAt,
+            updatedAt: now,
+          })
+          .where(eq(leads.id, row.id));
+      }
+    }
+
+    await db.insert(activities).values([
+      ...matched.map((row) => ({
         leadId: row.id,
         userId: user.id,
         type: "status_change" as const,
         channel: row.channel,
         note: `Status changed to ${data.status.replaceAll("_", " ")}.`,
       })),
-    );
+      ...(data.status === "contacted"
+        ? matched
+            .filter((row) => row.status !== "contacted")
+            .map((row) => ({
+              leadId: row.id,
+              userId: user.id,
+              type: "dm_sent" as const,
+              channel: row.channel,
+              occurredAt: now,
+            }))
+        : []),
+    ]);
 
     if (data.status === "replied") {
       for (const row of matched) {
