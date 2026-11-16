@@ -5,6 +5,7 @@ import { EmptyState } from "@/components/empty-state";
 import { DeletePostButton } from "@/components/posts/delete-post-button";
 import { PostFormDialog } from "@/components/posts/post-form-dialog";
 import { formatRelative } from "@/lib/date";
+import { ensureHttpUrl } from "@/lib/url";
 import type { SocialPostRow } from "@/lib/social-posts";
 
 function initials(name: string) {
@@ -43,6 +44,8 @@ export function PostsGrid({
       {posts.map((post) => {
         const authorLabel = post.authorName || post.authorEmail;
         const canManage = isAdmin || post.authorId === currentUserId;
+        const linkUrl = ensureHttpUrl(post.linkUrl) ?? post.linkUrl;
+        const imageUrl = ensureHttpUrl(post.imageUrl) ?? post.imageUrl;
 
         return (
           <Card
@@ -50,14 +53,14 @@ export function PostsGrid({
             className="flex flex-col overflow-hidden transition-shadow hover:shadow-md"
           >
             <a
-              href={post.linkUrl}
+              href={linkUrl}
               target="_blank"
               rel="noreferrer noopener"
               className="block aspect-video overflow-hidden bg-secondary/50"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={post.imageUrl}
+                src={imageUrl}
                 alt={post.title}
                 loading="lazy"
                 className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
@@ -85,7 +88,7 @@ export function PostsGrid({
                 <div className="flex shrink-0 items-center">
                   <Button asChild variant="ghost" size="icon">
                     <a
-                      href={post.linkUrl}
+                      href={linkUrl}
                       target="_blank"
                       rel="noreferrer noopener"
                       aria-label="Open post"

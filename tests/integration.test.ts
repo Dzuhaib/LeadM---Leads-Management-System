@@ -65,7 +65,11 @@ import {
   listAdminReplies,
 } from "@/lib/admin";
 import { getEmployeeDashboard } from "@/lib/dashboard";
-import { findDuplicateLeads } from "@/lib/duplicates";
+import {
+  ensureHttpUrl,
+  findDuplicateLeads,
+  normalizeProfileUrl,
+} from "@/lib/duplicates";
 import { getNoReplyLeads } from "@/lib/leads";
 import { importLeadsFromFile } from "@/lib/import-server";
 import { buildEmployeeWorkbook } from "@/lib/excel-export";
@@ -106,15 +110,18 @@ async function createUser(overrides: {
 }
 
 async function insertLead(ownerId: string, overrides: Record<string, unknown> = {}) {
+  const { profileUrl: rawProfileUrl, ...rest } = overrides;
+  const profileUrl = ensureHttpUrl(rawProfileUrl as string | null | undefined);
   const [lead] = await db
     .insert(leads)
     .values({
       ownerId,
-      businessName: overrides.businessName as string,
-      contactName: (overrides.contactName as string) ?? "",
-      profileUrl: (overrides.profileUrl as string) ?? null,
-      status: (overrides.status as "new") ?? "new",
-      ...overrides,
+      businessName: rest.businessName as string,
+      contactName: (rest.contactName as string) ?? "",
+      status: (rest.status as "new") ?? "new",
+      ...rest,
+      profileUrl,
+      profileKey: normalizeProfileUrl(profileUrl),
     })
     .returning();
   return lead;
@@ -249,6 +256,16 @@ describeDb("database-backed acceptance rules", () => {
     expect(byUrl[0]?.ownerEmail).toBe("a@example.com");
     expect(byUrl[0]?.matchedOn).toBe("profile_url");
 
+    const [stored] = await db
+      .select({
+        profileUrl: leads.profileUrl,
+        profileKey: leads.profileKey,
+      })
+      .from(leads)
+      .where(sql`id = ${owned.id}`);
+    expect(stored?.profileUrl).toBe("https://linkedin.com/in/jane-doe");
+    expect(stored?.profileKey).toBe("linkedin.com/in/jane-doe");
+
     const byName = await findDuplicateLeads({ businessName: "  acme   corp " });
     expect(byName[0]?.id).toBe(owned.id);
 
@@ -345,6 +362,8 @@ describeDb("database-backed acceptance rules", () => {
     expect(employee.totals.replies).toBe(1);
     expect(employee.totals.replyRate).toBe(50);
     expect(employee.totals.newLeads).toBe(1);
+    expect(employee.totals.contacted).toBe(0);
+    expect(employee.contactedLeads).toHaveLength(0);
     expect(
       employee.channels.some((row) => row.channel === "whatsapp"),
     ).toBe(false);
@@ -352,6 +371,11 @@ describeDb("database-backed acceptance rules", () => {
     const base = await getAdminDashboard({ range, timeZone: "UTC" });
     expect(base.totals.messages).toBe(3);
     expect(base.totals.replies).toBe(1);
+    expect(base.totals.contacted).toBe(1);
+    expect(base.performance.find((row) => row.id === employeeB.id)?.contacted).toBe(
+      1,
+    );
+    expect(base.contactedLeads.map((row) => row.id)).toContain(leadB.id);
     expect(base.performance.find((row) => row.id === employeeA.id)?.messages).toBe(
       2,
     );

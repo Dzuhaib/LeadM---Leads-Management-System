@@ -7,7 +7,11 @@ import {
   isOverdue,
   shouldMarkNoReply,
 } from "@/lib/follow-up";
-import { normalizeProfileUrl, normalizeBusinessName } from "@/lib/duplicates";
+import {
+  ensureHttpUrl,
+  normalizeProfileUrl,
+  normalizeBusinessName,
+} from "@/lib/duplicates";
 
 const sentAt = new Date("2026-01-01T10:00:00.000Z");
 
@@ -67,5 +71,16 @@ describe("duplicate normalization", () => {
 
   it("normalizes business names", () => {
     expect(normalizeBusinessName("  Acme   Corp  ")).toBe("acme corp");
+  });
+
+  it("ensures a stored URL opens correctly", () => {
+    expect(ensureHttpUrl("linkedin.com/in/Jane-Doe")).toBe(
+      "https://linkedin.com/in/Jane-Doe",
+    );
+    expect(
+      ensureHttpUrl("https://www.facebook.com/permalink.php?story_fbid=123"),
+    ).toBe("https://www.facebook.com/permalink.php?story_fbid=123");
+    expect(ensureHttpUrl("  ")).toBeNull();
+    expect(ensureHttpUrl(null)).toBeNull();
   });
 });

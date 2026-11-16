@@ -8,6 +8,7 @@ import {
   Percent,
   Send,
   Trophy,
+  UserCheck,
   UserPlus,
   UserX,
   Users,
@@ -124,6 +125,13 @@ export default async function AdminHomePage({
           icon={UserPlus}
         />
         <KpiCard
+          label="Contacted leads"
+          value={data.totals.contacted}
+          hint="Current pipeline"
+          icon={UserCheck}
+          tone="sky"
+        />
+        <KpiCard
           label="Replies"
           value={data.totals.replies}
           hint={`Reply rate ${data.totals.replyRate}%`}
@@ -173,6 +181,7 @@ export default async function AdminHomePage({
       <RecentActivityTabs
         newLeads={data.recentLeads}
         messages={data.recentMessages}
+        contactedLeads={data.contactedLeads}
         timeZone={settingsRow.timezone}
       />
 

@@ -10,6 +10,7 @@ import {
   Percent,
   Send,
   Trophy,
+  UserCheck,
   UserPlus,
   Users,
 } from "lucide-react";
@@ -160,6 +161,13 @@ export default async function AdminEmployeeDetailPage({
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <KpiCard label="Messages sent" value={data.totals.messages} icon={Send} />
         <KpiCard label="New leads" value={data.totals.newLeads} icon={UserPlus} />
+        <KpiCard
+          label="Contacted leads"
+          value={data.totals.contacted}
+          hint="Current pipeline"
+          icon={UserCheck}
+          tone="sky"
+        />
         <KpiCard
           label="Replies"
           value={data.totals.replies}

@@ -82,7 +82,14 @@ export async function getEmployeeDashboard(
         .groupBy(activities.channel),
     ]);
 
-  const [funnelRows, todayMessagesRows, todayLeadsRows, recent] =
+  const [
+    funnelRows,
+    todayMessagesRows,
+    todayLeadsRows,
+    recent,
+    contactedRows,
+    contactedLeads,
+  ] =
     await Promise.all([
       db
         .select({ status: leads.status, value: count() })
@@ -128,6 +135,28 @@ export async function getEmployeeDashboard(
         .where(eq(activities.userId, ownerId))
         .orderBy(desc(activities.occurredAt))
         .limit(8),
+      db
+        .select({ value: count() })
+        .from(leads)
+        .where(
+          and(
+            eq(leads.ownerId, ownerId),
+            isNull(leads.deletedAt),
+            eq(leads.status, "contacted"),
+          ),
+        ),
+      db
+        .select()
+        .from(leads)
+        .where(
+          and(
+            eq(leads.ownerId, ownerId),
+            isNull(leads.deletedAt),
+            eq(leads.status, "contacted"),
+          ),
+        )
+        .orderBy(desc(leads.updatedAt))
+        .limit(8),
     ]);
 
   const [followUps, noReply] = await Promise.all([
@@ -145,6 +174,7 @@ export async function getEmployeeDashboard(
   const newLeads = Number(newLeadRows[0]?.value ?? 0);
   const messages = Number(totals.messages ?? 0);
   const replies = Number(totals.replies ?? 0);
+  const contacted = Number(contactedRows[0]?.value ?? 0);
 
   const funnelMap = new Map(
     funnelRows.map((row) => [row.status, Number(row.value)]),
@@ -155,6 +185,7 @@ export async function getEmployeeDashboard(
       messages,
       newLeads,
       replies,
+      contacted,
       replyRate: messages > 0 ? Math.round((replies / messages) * 100) : 0,
       calls: Number(totals.calls ?? 0),
       proposals: Number(totals.proposals ?? 0),
@@ -187,6 +218,7 @@ export async function getEmployeeDashboard(
     ).map((status) => ({ status, value: funnelMap.get(status) ?? 0 })),
     followUps,
     noReply,
+    contactedLeads,
     recent,
     targets: {
       messages: {

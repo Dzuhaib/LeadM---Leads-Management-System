@@ -92,6 +92,7 @@ export const leads = pgTable(
     channel: channelEnum("channel").notNull().default("linkedin"),
     source: text("source"),
     profileUrl: text("profile_url"),
+    profileKey: text("profile_key"),
     email: text("email"),
     phone: text("phone"),
     observation: text("observation"),
@@ -113,6 +114,7 @@ export const leads = pgTable(
     index("leads_owner_status_idx").on(table.ownerId, table.status),
     index("leads_next_follow_up_idx").on(table.nextFollowUpAt),
     index("leads_profile_url_idx").on(table.profileUrl),
+    index("leads_profile_key_idx").on(table.profileKey),
     index("leads_business_name_idx").on(table.businessName),
   ],
 );

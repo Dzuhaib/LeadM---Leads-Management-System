@@ -1,18 +1,9 @@
 import { and, eq, isNull, ne, or, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { leads, users } from "@/db/schema";
+import { normalizeProfileUrl } from "./url";
 
-export function normalizeProfileUrl(url?: string | null) {
-  if (!url) return null;
-  const normalized = url
-    .trim()
-    .toLowerCase()
-    .replace(/^https?:\/\//, "")
-    .replace(/^www\./, "")
-    .replace(/[?#].*$/, "")
-    .replace(/\/+$/, "");
-  return normalized || null;
-}
+export { ensureHttpUrl, normalizeProfileUrl } from "./url";
 
 export function normalizeBusinessName(name?: string | null) {
   return (name ?? "").trim().toLowerCase().replace(/\s+/g, " ");
@@ -23,6 +14,7 @@ export type DuplicateMatch = {
   businessName: string;
   contactName: string;
   profileUrl: string | null;
+  profileKey: string | null;
   ownerId: string;
   ownerName: string;
   ownerEmail: string;
@@ -39,7 +31,7 @@ export async function findDuplicateLeads(input: {
   const businessName = normalizeBusinessName(input.businessName);
 
   const matches = [];
-  if (normalizedUrl) matches.push(eq(leads.profileUrl, normalizedUrl));
+  if (normalizedUrl) matches.push(eq(leads.profileKey, normalizedUrl));
   if (businessName) {
     matches.push(sql`lower(${leads.businessName}) = ${businessName}`);
   }
@@ -56,6 +48,7 @@ export async function findDuplicateLeads(input: {
       businessName: leads.businessName,
       contactName: leads.contactName,
       profileUrl: leads.profileUrl,
+      profileKey: leads.profileKey,
       ownerId: leads.ownerId,
       ownerName: users.fullName,
       ownerEmail: users.email,
@@ -68,7 +61,7 @@ export async function findDuplicateLeads(input: {
   return rows.map((row) => ({
     ...row,
     matchedOn:
-      normalizedUrl && row.profileUrl === normalizedUrl
+      normalizedUrl && row.profileKey === normalizedUrl
         ? ("profile_url" as const)
         : ("business_name" as const),
   }));

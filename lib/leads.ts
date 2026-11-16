@@ -18,7 +18,7 @@ import { activities, leads, users, type Lead } from "@/db/schema";
 import { fromZonedTime } from "date-fns-tz";
 import { CHANNEL_LABELS, type Channel } from "./constants";
 import { zonedDayBounds } from "./date";
-import { normalizeProfileUrl } from "./duplicates";
+import { ensureHttpUrl } from "./url";
 import type { LeadListParams } from "./validation";
 
 export type LeadListResult = {
@@ -44,12 +44,10 @@ export function deriveLeadName(input: {
   serviceWanted?: string | null;
   channel: Channel;
 }) {
-  const normalizedUrl = normalizeProfileUrl(input.sourceUrl);
-  if (normalizedUrl) {
+  const profileUrl = ensureHttpUrl(input.sourceUrl);
+  if (profileUrl) {
     try {
-      const url = new URL(
-        normalizedUrl.includes("://") ? normalizedUrl : `https://${normalizedUrl}`,
-      );
+      const url = new URL(profileUrl);
       const segments = url.pathname.split("/").filter(Boolean);
       const lastSegment = segments.at(-1);
       if (lastSegment) {

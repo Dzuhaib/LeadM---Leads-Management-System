@@ -52,6 +52,7 @@ export type EmployeePerformanceRow = TeamMember & {
   calls: number;
   proposals: number;
   won: number;
+  contacted: number;
   noReply: number;
   overdue: number;
   lastActive: Date | null;
@@ -183,6 +184,8 @@ export async function getAdminDashboard(input: {
     funnelRows,
     recentLeadRows,
     recentMessageRows,
+    contactedRows,
+    contactedLeadRows,
   ] = await Promise.all([
     db
       .select({
@@ -346,6 +349,29 @@ export async function getAdminDashboard(input: {
       )
       .orderBy(desc(activities.occurredAt))
       .limit(8),
+    db
+      .select({ ownerId: leads.ownerId, value: count() })
+      .from(leads)
+      .where(and(...leadBaseFilters, eq(leads.status, "contacted")))
+      .groupBy(leads.ownerId),
+    db
+      .select({
+        id: leads.id,
+        businessName: leads.businessName,
+        contactName: leads.contactName,
+        serviceWanted: leads.serviceWanted,
+        channel: leads.channel,
+        status: leads.status,
+        nextFollowUpAt: leads.nextFollowUpAt,
+        updatedAt: leads.updatedAt,
+        ownerName: users.fullName,
+        ownerEmail: users.email,
+      })
+      .from(leads)
+      .innerJoin(users, eq(leads.ownerId, users.id))
+      .where(and(...leadBaseFilters, eq(leads.status, "contacted")))
+      .orderBy(desc(leads.updatedAt))
+      .limit(8),
   ]);
 
   const newLeadsMap = new Map(
@@ -370,6 +396,9 @@ export async function getAdminDashboard(input: {
     ]),
   );
   const perfMap = new Map(activityPerfRows.map((row) => [row.userId, row]));
+  const contactedMap = new Map(
+    contactedRows.map((row) => [row.ownerId, toNumber(row.value)]),
+  );
 
   let totals = {
     messages: 0,
@@ -379,6 +408,7 @@ export async function getAdminDashboard(input: {
     calls: 0,
     proposals: 0,
     won: 0,
+    contacted: 0,
   };
 
   for (const row of activityPerfRows) {
@@ -390,6 +420,9 @@ export async function getAdminDashboard(input: {
   }
   for (const row of newLeadRows) {
     totals.newLeads += toNumber(row.value);
+  }
+  for (const row of contactedRows) {
+    totals.contacted += toNumber(row.value);
   }
   totals = {
     ...totals,
@@ -422,6 +455,7 @@ export async function getAdminDashboard(input: {
       calls: toNumber(perf?.calls),
       proposals: toNumber(perf?.proposals),
       won: toNumber(perf?.won),
+      contacted: contactedMap.get(member.id) ?? 0,
       noReply: noReplyMap.get(member.id) ?? 0,
       overdue: overdueMap.get(member.id) ?? 0,
       lastActive,
@@ -494,6 +528,7 @@ export async function getAdminDashboard(input: {
     })),
     recentLeads: recentLeadRows,
     recentMessages: recentMessageRows,
+    contactedLeads: contactedLeadRows,
     funnel: (
       [
         "new",

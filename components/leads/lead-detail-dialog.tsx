@@ -23,6 +23,7 @@ import {
   type ReplyTag,
 } from "@/lib/constants";
 import { formatDateTime } from "@/lib/date";
+import { ensureHttpUrl } from "@/lib/url";
 import type { Lead } from "@/db/schema";
 
 type TimelineRow = {
@@ -132,11 +133,7 @@ export function LeadDetailDialog({
                 </p>
                 {lead.profileUrl ? (
                   <a
-                    href={
-                      lead.profileUrl.includes("://")
-                        ? lead.profileUrl
-                        : `https://${lead.profileUrl}`
-                    }
+                    href={ensureHttpUrl(lead.profileUrl) ?? undefined}
                     target="_blank"
                     rel="noreferrer"
                     className="break-all text-primary underline-offset-4"

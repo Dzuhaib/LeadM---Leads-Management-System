@@ -15,6 +15,7 @@ import {
   type ServicePitched,
 } from "@/lib/constants";
 import {
+  ensureHttpUrl,
   normalizeBusinessName,
   normalizeProfileUrl,
 } from "@/lib/duplicates";
@@ -279,6 +280,7 @@ async function loadDuplicates(): Promise<DuplicateLookup> {
     .select({
       businessName: leads.businessName,
       profileUrl: leads.profileUrl,
+      profileKey: leads.profileKey,
       ownerName: users.fullName,
       ownerEmail: users.email,
     })
@@ -291,7 +293,7 @@ async function loadDuplicates(): Promise<DuplicateLookup> {
 
   for (const row of rows) {
     const owner = ownerLabel(row.ownerName, row.ownerEmail);
-    const profileKey = normalizeProfileUrl(row.profileUrl);
+    const profileKey = row.profileKey ?? normalizeProfileUrl(row.profileUrl);
     const businessKey = normalizeBusinessName(row.businessName);
     if (profileKey && !byProfile.has(profileKey)) byProfile.set(profileKey, owner);
     if (businessKey && !byBusiness.has(businessKey)) {
@@ -461,7 +463,8 @@ export async function importLeadsFromFile(
       country: data.country ?? null,
       channel: data.channel,
       source: data.source ?? null,
-      profileUrl: normalizeProfileUrl(data.profileUrl),
+      profileUrl: ensureHttpUrl(data.profileUrl),
+      profileKey: normalizeProfileUrl(data.profileUrl),
       email: data.email ?? null,
       phone: data.phone ?? null,
       observation: data.observation ?? null,

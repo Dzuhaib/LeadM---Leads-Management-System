@@ -6,6 +6,7 @@ import {
   Percent,
   Send,
   Trophy,
+  UserCheck,
   UserPlus,
   Users,
 } from "lucide-react";
@@ -99,6 +100,13 @@ export default async function DashboardPage({
           value={data.totals.newLeads}
           hint="Added in this period"
           icon={UserPlus}
+        />
+        <KpiCard
+          label="Contacted leads"
+          value={data.totals.contacted}
+          hint="Current pipeline"
+          icon={UserCheck}
+          tone="sky"
         />
         <KpiCard
           label="Replies"

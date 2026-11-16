@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowUpRight, Radio, Send, UserPlus } from "lucide-react";
+import { ArrowUpRight, Radio, Send, UserCheck, UserPlus } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { formatRelative } from "@/lib/date";
+import { formatDateTime, formatRelative } from "@/lib/date";
 import {
   CHANNEL_LABELS,
   type ActivityType,
@@ -41,6 +41,19 @@ type RecentMessage = {
   ownerEmail: string;
 };
 
+type ContactedLead = {
+  id: string;
+  businessName: string;
+  contactName: string;
+  serviceWanted: string | null;
+  channel: Channel;
+  status: LeadStatus;
+  nextFollowUpAt: Date | null;
+  updatedAt: Date;
+  ownerName: string;
+  ownerEmail: string;
+};
+
 function Count({ value }: { value: number }) {
   return (
     <span className="ml-1 inline-flex min-w-5 items-center justify-center rounded-full bg-background px-1.5 py-0.5 text-[10px] font-semibold tabular-nums text-muted-foreground">
@@ -52,13 +65,22 @@ function Count({ value }: { value: number }) {
 function ActivityTag({
   kind,
 }: {
-  kind: "new" | "message";
+  kind: "new" | "message" | "contacted";
 }) {
   if (kind === "new") {
     return (
       <span className="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-2 py-0.5 text-[10px] font-semibold text-blue-700 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-200">
         <UserPlus className="h-3 w-3" />
         New
+      </span>
+    );
+  }
+
+  if (kind === "contacted") {
+    return (
+      <span className="inline-flex items-center gap-1 rounded-full border border-cyan-200 bg-cyan-50 px-2 py-0.5 text-[10px] font-semibold text-cyan-700 dark:border-cyan-900 dark:bg-cyan-950 dark:text-cyan-200">
+        <UserCheck className="h-3 w-3" />
+        Contacted
       </span>
     );
   }
@@ -74,10 +96,12 @@ function ActivityTag({
 export function RecentActivityTabs({
   newLeads,
   messages,
+  contactedLeads,
   timeZone,
 }: {
   newLeads: RecentLead[];
   messages: RecentMessage[];
+  contactedLeads: ContactedLead[];
   timeZone: string;
 }) {
   return (
@@ -86,7 +110,7 @@ export function RecentActivityTabs({
         <div className="space-y-1">
           <CardTitle>Latest team activity</CardTitle>
           <CardDescription>
-            Newly added leads and messages sent by the team.
+            Newly added leads, contacted leads and messages sent by the team.
           </CardDescription>
         </div>
         <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-border bg-secondary px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
@@ -106,6 +130,16 @@ export function RecentActivityTabs({
               </span>
               New leads
               <Count value={newLeads.length} />
+            </TabsTrigger>
+            <TabsTrigger
+              value="contacted"
+              className="gap-2 rounded-lg px-3 py-2 data-[state=active]:bg-card"
+            >
+              <span className="nav-icon-3d flex h-6 w-6 items-center justify-center rounded-md text-cyan-600 dark:text-cyan-300">
+                <UserCheck className="h-3.5 w-3.5" strokeWidth={2} />
+              </span>
+              Contacted
+              <Count value={contactedLeads.length} />
             </TabsTrigger>
             <TabsTrigger
               value="messages"
@@ -185,6 +219,43 @@ export function RecentActivityTabs({
                     <span className="mt-0.5 block truncate text-xs text-muted-foreground">
                       {message.ownerName || message.ownerEmail} ·{" "}
                       {formatRelative(message.occurredAt, timeZone)}
+                    </span>
+                  </span>
+                  <ArrowUpRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+                </Link>
+              ))
+            )}
+          </TabsContent>
+
+          <TabsContent value="contacted" className="space-y-2">
+            {contactedLeads.length === 0 ? (
+              <p className="rounded-xl border border-dashed border-border p-5 text-center text-sm text-muted-foreground">
+                No contacted leads in this scope yet.
+              </p>
+            ) : (
+              contactedLeads.map((lead) => (
+                <Link
+                  key={lead.id}
+                  href={`/admin/leads?q=${encodeURIComponent(lead.businessName)}`}
+                  className="flex items-center gap-3 rounded-xl border border-border bg-card p-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <span className="nav-icon-3d flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-cyan-600 dark:text-cyan-300">
+                    <UserCheck className="h-[18px] w-[18px]" strokeWidth={1.9} />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="flex flex-wrap items-center gap-2">
+                      <span className="truncate text-sm font-semibold text-foreground">
+                        {lead.businessName}
+                      </span>
+                      <ActivityTag kind="contacted" />
+                    </span>
+                    <span className="mt-0.5 block truncate text-xs text-muted-foreground">
+                      {lead.serviceWanted || "No service noted"} ·{" "}
+                      {CHANNEL_LABELS[lead.channel]}
+                    </span>
+                    <span className="mt-0.5 block truncate text-xs text-muted-foreground">
+                      {lead.ownerName || lead.ownerEmail} · next follow-up{" "}
+                      {formatDateTime(lead.nextFollowUpAt, timeZone)}
                     </span>
                   </span>
                   <ArrowUpRight className="h-4 w-4 shrink-0 text-muted-foreground" />

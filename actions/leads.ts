@@ -7,7 +7,11 @@ import { activities, leads, users } from "@/db/schema";
 import { getCurrentDbUser } from "@/lib/auth";
 import { ActionError, toActionError, type ActionResult } from "@/lib/action-result";
 import { recordAudit } from "@/lib/audit";
-import { findDuplicateLeads, normalizeProfileUrl } from "@/lib/duplicates";
+import {
+  ensureHttpUrl,
+  findDuplicateLeads,
+  normalizeProfileUrl,
+} from "@/lib/duplicates";
 import { deriveLeadName, getLeadById, getLeadTimeline } from "@/lib/leads";
 import { checkRateLimit, rateLimitKey } from "@/lib/rate-limit";
 import { leadInputSchema, leadUpdateSchema, bulkStatusSchema } from "@/lib/validation";
@@ -84,7 +88,8 @@ export async function createLead(input: unknown): Promise<ActionResult<{ id: str
         country: data.country ?? null,
         channel: data.channel,
         source: data.source ?? null,
-        profileUrl: normalizeProfileUrl(data.profileUrl),
+        profileUrl: ensureHttpUrl(data.profileUrl),
+        profileKey: normalizeProfileUrl(data.profileUrl),
         email: data.email ?? null,
         phone: data.phone ?? null,
         observation: data.observation ?? null,
@@ -176,7 +181,10 @@ export async function updateLead(input: unknown): Promise<ActionResult> {
         ...(data.channel !== undefined ? { channel: data.channel } : {}),
         ...(data.source !== undefined ? { source: data.source } : {}),
         ...(data.profileUrl !== undefined
-          ? { profileUrl: normalizeProfileUrl(data.profileUrl) }
+          ? {
+              profileUrl: ensureHttpUrl(data.profileUrl),
+              profileKey: normalizeProfileUrl(data.profileUrl),
+            }
           : {}),
         ...(data.email !== undefined ? { email: data.email } : {}),
         ...(data.phone !== undefined ? { phone: data.phone } : {}),

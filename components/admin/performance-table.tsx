@@ -20,6 +20,7 @@ type SortKey =
   | "fullName"
   | "messages"
   | "newLeads"
+  | "contacted"
   | "replies"
   | "replyRate"
   | "calls"
@@ -32,6 +33,7 @@ const COLUMNS: { key: SortKey; label: string; numeric?: boolean }[] = [
   { key: "fullName", label: "Employee" },
   { key: "messages", label: "Messages", numeric: true },
   { key: "newLeads", label: "New leads", numeric: true },
+  { key: "contacted", label: "Contacted", numeric: true },
   { key: "replies", label: "Replies", numeric: true },
   { key: "replyRate", label: "Reply rate", numeric: true },
   { key: "calls", label: "Calls", numeric: true },
@@ -168,6 +170,9 @@ export function PerformanceTable({
               </TableCell>
               <TableCell className="text-right tabular-nums">
                 {row.newLeads}
+              </TableCell>
+              <TableCell className="text-right tabular-nums">
+                {row.contacted}
               </TableCell>
               <TableCell className="text-right tabular-nums">
                 {row.replies}
